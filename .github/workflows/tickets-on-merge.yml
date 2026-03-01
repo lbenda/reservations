@@ -1,0 +1,53 @@
+name: Tickets - on merge to master
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [master]
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Sync mode"
+        required: true
+        default: "changed"
+        type: choice
+        options:
+          - changed
+          - full
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  on-merge:
+    if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Close issues + mark files as Merged + sync Project v2
+        env:
+          TICKETS_MODE: merge
+          SYNC_MODE: ${{ github.event.inputs.mode || 'changed' }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PROJECT_TOKEN: ${{ secrets.PROJECT_TOKEN }}
+
+          DEFAULT_BRANCH: master
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+
+          PROJECT_KIND: user
+          PROJECT_OWNER: lbenda
+          PROJECT_NUMBER: "1"
+
+          PROJECT_FIELD_STATUS: Status
+          PROJECT_FIELD_AREA: Area
+          PROJECT_STATUS_MERGED: Merged
+        run: node .github/scripts/tickets.js

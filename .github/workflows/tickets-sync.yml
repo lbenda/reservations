@@ -1,0 +1,62 @@
+name: Tickets - sync (issues + project v2)
+
+on:
+  push:
+    paths:
+      - "work/bugs/**"
+      - "work/features/**"
+      - "work/tasks/**"
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - "work/bugs/**"
+      - "work/features/**"
+      - "work/tasks/**"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Sync mode"
+        required: true
+        default: "changed"
+        type: choice
+        options:
+          - changed
+          - full
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Sync issues + project items from changed tickets
+        env:
+          TICKETS_MODE: sync
+          SYNC_MODE: ${{ github.event.inputs.mode || 'changed' }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+          # Token with permission for Projects v2 (PAT classic or GitHub App token)
+          PROJECT_TOKEN: ${{ secrets.PROJECT_TOKEN }}
+
+          DEFAULT_BRANCH: master
+
+          # Where we write to Project v2:
+          # PROJECT_KIND: "organization" or "user"
+          PROJECT_KIND: user
+          PROJECT_OWNER: lbenda
+          PROJECT_NUMBER: "1"
+
+          PROJECT_FIELD_STATUS: Status
+          PROJECT_FIELD_AREA: Area
+          PROJECT_STATUS_MERGED: Merged
+        run: node .github/scripts/tickets.js

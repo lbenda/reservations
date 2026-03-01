@@ -1,0 +1,17 @@
+name: Repo hygiene
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check work items
+        run: |
+          chmod +x scripts/*.sh
+          scripts/check-work-items.sh
