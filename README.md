@@ -9,6 +9,8 @@ A reservation system with a Kotlin backend and React web frontend.
 The system consists of a server (Kotlin/Ktor) and a web UI (React/TypeScript/Vite).
 Business logic lives in the server, the web UI communicates via REST API.
 
+Database is PostgreSQL with jOOQ as the database access layer.
+
 ---
 
 ## Project Structure
