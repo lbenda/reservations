@@ -1,32 +1,25 @@
 # T-006: Tests – Service Catalog Coverage
 
+- Type: Task
 - Parent: F-001
-- Status: Todo
+- Status: In Progress
+- Feature: F-001
 - Owner: qa
 - Related modules: backend, frontend
-- Depends on: T-002, T-003, T-004
+- Depends on: T-002, T-003, T-004, T-011, T-012
 
 ## Goal
 Ensure Service catalog is stable: validations, CRUD behavior, and archive semantics are covered by tests.
 
 ## Scope
-- Backend unit tests:
-    - validation rules (duration, buffers, price, advance constraints)
-- Backend integration tests:
-    - CRUD happy path
-    - business scoping (cannot access another business’s services)
-    - archive behavior
-- Frontend tests:
-    - form validation and error rendering
-    - archive flow UI behavior
+- Coordinating umbrella task for split test coverage.
+- Backend validation unit tests (T-012)
+- Backend integration tests (T-014)
+- Frontend tests (T-015)
 
 ## Out of Scope
 - Availability engine correctness (F-003 tests)
 - Notifications (F-007)
 
 ## Definition of Done
-- Test suite runs green in CI
-- Coverage includes at least:
-    - 1 negative test per validation rule
-    - 1 scoping/security regression test
-    - 1 UI flow test (create/edit/archive)
+- T-012, T-014, and T-015 are Done

@@ -48,6 +48,23 @@ Database is PostgreSQL with jOOQ as the database access layer.
 
 Server starts on http://localhost:8080
 
+## Generate jOOQ Sources
+
+Database schema is managed by Flyway migrations. Generate jOOQ Kotlin tables after schema changes:
+
+```bash
+./gradlew :server:generateJooq
+```
+
+If Docker is not available, point codegen to an existing PostgreSQL instance:
+
+```bash
+export JOOQ_DB_URL=jdbc:postgresql://localhost:5432/your_db
+export JOOQ_DB_USER=your_user
+export JOOQ_DB_PASS=your_pass
+./gradlew :server:generateJooq
+```
+
 ## Running Web UI
 
 ```bash
@@ -72,6 +89,23 @@ or
 
 ```powershell
 bash -c "./scripts/ai-briefing.sh F-007 > /tmp/AI_BRIEFING_F-007.md"
+```
+
+## Running Tests
+
+By default, database-backed tests run using Testcontainers (Docker required).
+
+```bash
+./gradlew :server:test
+```
+
+To run against an existing PostgreSQL instance (no Docker), set:
+
+```bash
+export TEST_DB_URL=jdbc:postgresql://localhost:5432/your_db
+export TEST_DB_USER=your_user
+export TEST_DB_PASS=your_pass
+./gradlew :server:test
 ```
 
 ---

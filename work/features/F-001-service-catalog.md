@@ -34,6 +34,10 @@ Current implementation gaps:
 - [T-004: Booking UI - Service selection](../tasks/T-004-booking-ui-service-selection.md)
 - [T-005: Public Booking UI – Service Selection](../tasks/T-005-public-booking-ui-service-selection.md)
 - [T-006: Tests – Service Catalog Coverage](../tasks/T-006-tests-service-catalog-coverage.md)
+- [T-011: Service Validation Rules](../tasks/T-011-service-validation-rules.md)
+- [T-012: Service Validation Tests](../tasks/T-012-service-validation-tests.md)
+- [T-014: Service Integration Tests](../tasks/T-014-service-integration-tests.md)
+- [T-015: Service Frontend Tests](../tasks/T-015-service-frontend-tests.md)
 
 ## Related Documentation
 - docs/domain/service.md (Planned)

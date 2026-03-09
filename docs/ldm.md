@@ -5,6 +5,19 @@ This Logical Data Model (LDM) describes the core domain entities and their relat
 ## Domain Overview
 The system serves multiple businesses (tenants). Each business has locations, staff, services, clients, and bookings. Bookings can be paid, can consume packages (entitlements), and are audited. Integrations are supported via API keys, webhooks, and external calendars.
 
+## Module Boundaries
+The LDM can be modularized into cohesive domains that can evolve with minimal cross-impact:
+| Module | Entities |
+| --- | --- |
+| Tenant & Access | Business, Location, User, Role, BusinessUser, ApiKey |
+| Catalog & Staff | Service, Staff, StaffService |
+| Clients | Client, Consent |
+| Booking | Booking, Block |
+| Payments | Payment |
+| Packages & Entitlements | Package, EntitlementLedger |
+| Audit | AuditEvent |
+| Integrations | WebhookEndpoint, WebhookDelivery, ExternalCalendar, BusyBlock |
+
 ## Terminology
 | Term | Meaning |
 | --- | --- |

@@ -1,46 +1,25 @@
 # T-002: Data Model – Service
 
+- Type: Task
 - Parent: F-001
-- Status: Todo
+- Status: Done
+- Feature: F-001
 - Owner: backend
 - Related modules: services, database
 - Depends on: -
 
 ## Goal
-Define and persist the core Service entity used across booking flow and availability calculations.
+Define and persist the core Service entity schema and repository.
 
 ## Scope
-- Create `Service` table/collection with fields:
-    - `id` (uuid)
-    - `businessId`
-    - `name`
-    - `description` (optional)
-    - `durationMin`
-    - `price` (decimal, optional)
-    - `currency` (ISO-4217, default from business)
-    - `bufferBeforeMin` (default 0)
-    - `bufferAfterMin` (default 0)
-    - `minAdvanceMin` (default 0)
-    - `maxAdvanceDays` (default e.g. 365)
-    - `isActive` (default true)
-    - `createdAt`, `updatedAt`
-- Constraints & validation:
-    - `durationMin > 0`
-    - buffers >= 0
-    - `minAdvanceMin >= 0`
-    - `maxAdvanceDays >= 0`
-    - `price >= 0` if present
-- Soft-delete or archive behavior via `isActive=false` (no hard delete for now)
-- Seed one example service in dev environment (optional)
+- Create `Service` table with full field set and defaults
+- Repository CRUD for Service (scoped by businessId)
 
 ## Out of Scope
-- Staff-service assignment (F-002)
-- Availability engine logic (F-003)
-- Payments (F-008)
+- Validation rules (see T-011)
+- Validation unit tests (see T-012)
+- Integration tests for CRUD/scoping (see T-014)
 
 ## Definition of Done
 - Migration applied and reversible
-- ORM/model layer added with validations
-- Basic repository/service methods:
-    - create/update/get/list (scoped by businessId)
-- Unit tests for validation rules
+- Repository methods exist for create/update/get/list scoped by businessId
