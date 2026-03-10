@@ -1,7 +1,7 @@
 # F-017: Audit Log (Historie změn)
 
 - Type: Feature
-- Status: Todo
+- Status: Backlog
 - Source: Product baseline (compliance & debugging)
 
 ## Description

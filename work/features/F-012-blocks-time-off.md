@@ -1,7 +1,7 @@
 # F-012: Blocks / Time Off (Blokace času)
 
 - Type: Feature
-- Status: Todo
+- Status: Backlog
 - Source: Product baseline (operations)
 
 ## Description

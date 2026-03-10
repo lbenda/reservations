@@ -1,7 +1,7 @@
 # F-014: Memberships & Packages (Permanentky / balíčky)
 
 - Type: Feature
-- Status: Todo
+- Status: Backlog
 - Source: Product baseline (retention)
 
 ## Description

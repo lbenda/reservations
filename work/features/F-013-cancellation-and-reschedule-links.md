@@ -1,7 +1,7 @@
 # F-013: Cancellation & Reschedule Links (Samoobsluha klienta)
 
 - Type: Feature
-- Status: Todo
+- Status: Backlog
 - Source: Product baseline (client UX)
 
 ## Description

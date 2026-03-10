@@ -1,7 +1,7 @@
 # F-008: Online Payments (Zálohy / platby)
 
 - Type: Feature
-- Status: Todo
+- Status: Backlog
 - Source: Product baseline (monetization)
 
 ## Description

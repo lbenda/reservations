@@ -1,7 +1,7 @@
 # F-015: Multi-Location (Více poboček)
 
 - Type: Feature
-- Status: Todo
+- Status: Backlog
 - Source: Product baseline (scaling)
 
 ## Description

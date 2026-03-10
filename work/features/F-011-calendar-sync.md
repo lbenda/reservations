@@ -1,7 +1,7 @@
 # F-011: Calendar Sync (Google/Outlook/iCal)
 
 - Type: Feature
-- Status: Todo
+- Status: Backlog
 - Source: Product baseline (calendar integration)
 
 ## Description

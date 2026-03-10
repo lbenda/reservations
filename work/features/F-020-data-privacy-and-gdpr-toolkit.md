@@ -1,7 +1,7 @@
 # F-020: Data Privacy & GDPR Toolkit (Souhlasy, export, mazání)
 
 - Type: Feature
-- Status: Todo
+- Status: Backlog
 - Source: EU compliance baseline
 
 ## Description

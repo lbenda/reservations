@@ -1,7 +1,7 @@
 # T-008: Flyway Schema Baseline
 
 - Type: Task
-- Status: Done
+- Status: In review
 - Feature: F-001
 - Owner: backend
 

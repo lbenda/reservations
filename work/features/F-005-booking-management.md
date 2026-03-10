@@ -1,7 +1,7 @@
 # F-005: Booking Management
 
 - Type: Feature
-- Status: Todo
+- Status: Backlog
 - Source: Product baseline (calendar ops)
 
 ## Description

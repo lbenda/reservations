@@ -84,7 +84,7 @@ for f in work/features/F-*.md; do
   check_metadata "$f" "Type"
   check_metadata "$f" "Status"
   check_metadata "$f" "Source"
-  check_status "$f" "Todo" "In Progress" "Done" "Merged" "Blocked"
+  check_status "$f" "Backlog" "In progress" "In review" "Blocked" "Done"
 done
 
 info "Checking tasks (T-###)..."
@@ -94,7 +94,7 @@ for f in work/tasks/T-*.md; do
   check_section "$f" "Goal"
   check_section "$f" "Scope"
   check_metadata "$f" "Status"
-  check_status "$f" "Todo" "In Progress" "Done" "Merged" "Blocked"
+  check_status "$f" "Backlog" "In progress" "In review" "Blocked" "Done"
 done
 
 info "Checking bugs (B-###)..."
@@ -103,7 +103,7 @@ for f in work/bugs/B-*.md; do
   check_section "$f" "Steps to reproduce"
   check_section "$f" "Actual behavior"
   check_metadata "$f" "Status"
-  check_status "$f" "Todo" "In Progress" "Done" "Merged" "Blocked"
+  check_status "$f" "Backlog" "In progress" "In review" "Blocked" "Done"
 done
 
 info "Checking ADRs (A-###)..."

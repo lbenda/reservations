@@ -2,7 +2,7 @@
 
 - Type: Task
 - Parent: F-001
-- Status: Done
+- Status: In review
 - Feature: F-001
 - Owner: qa
 - Related modules: backend, frontend
@@ -22,4 +22,4 @@ Ensure Service catalog is stable: validations, CRUD behavior, and archive semant
 - Notifications (F-007)
 
 ## Definition of Done
-- T-012, T-014, and T-015 are Done
+- T-012, T-014, and T-015 are In review

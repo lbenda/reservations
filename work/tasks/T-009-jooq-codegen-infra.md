@@ -1,7 +1,7 @@
 # T-009: jOOQ Codegen Infrastructure
 
 - Type: Task
-- Status: Done
+- Status: In review
 - Feature: F-001
 - Owner: backend
 

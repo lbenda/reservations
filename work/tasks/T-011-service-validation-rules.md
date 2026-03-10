@@ -1,7 +1,7 @@
 # T-011: Service Validation Rules
 
 - Type: Task
-- Status: Done
+- Status: In review
 - Feature: F-001
 - Owner: backend
 - Related modules: services, domain

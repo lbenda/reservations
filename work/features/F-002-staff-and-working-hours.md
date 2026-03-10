@@ -1,7 +1,7 @@
 # F-002: Staff & Working Hours
 
 - Type: Feature
-- Status: Todo
+- Status: Backlog
 - Source: Product baseline (Reservio-like core)
 
 ## Description

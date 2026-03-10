@@ -1,7 +1,7 @@
 # F-010: Embeddable Booking Widget (Vložení na vlastní web)
 
 - Type: Feature
-- Status: Todo
+- Status: Backlog
 - Source: Product baseline (integrations)
 
 ## Description

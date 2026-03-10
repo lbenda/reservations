@@ -1,7 +1,7 @@
 # F-004: Booking Creation Flow
 
 - Type: Feature
-- Status: Todo
+- Status: Backlog
 - Source: Product baseline (online booking)
 
 ## Description

@@ -1,6 +1,6 @@
 # T-001: Basic features
 
-- Status: Todo
+- Status: Backlog
 - Owner: Initial setup
 
 ## Goal

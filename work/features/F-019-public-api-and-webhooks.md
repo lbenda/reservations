@@ -1,7 +1,7 @@
 # F-019: Public API & Webhooks (Integrace pro ajťáky)
 
 - Type: Feature
-- Status: Todo
+- Status: Backlog
 - Source: Competitive differentiator
 
 ## Description

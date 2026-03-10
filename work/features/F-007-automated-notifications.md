@@ -1,7 +1,7 @@
 # F-007: Automated Notifications (Email/SMS připomínky)
 
 - Type: Feature
-- Status: Todo
+- Status: Backlog
 - Source: Product baseline (reminders)
 
 ## Description

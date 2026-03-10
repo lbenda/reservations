@@ -29,12 +29,11 @@ Must contain the **same values** used in Markdown files.
 
 **Important:** You must manually add these options to your GitHub Project v2 board settings:
 
-- Todo
-- In Progress
-- Done
-- Merged
+- Backlog
+- In progress
+- In review
 - Blocked
-  *(or others as needed)*
+- Done
 
 > Values are **case-sensitive** – they must match exactly.
 
@@ -105,26 +104,26 @@ PROJECT_NUMBER: "5"          # Project v2 number
 
 PROJECT_FIELD_STATUS: Status
 PROJECT_FIELD_AREA: Area
-PROJECT_STATUS_MERGED: Merged # Name of the status for merged tickets
+PROJECT_STATUS_DONE: Done # Name of the status for merged/completed tickets
 ```
 
 ---
 
-### Automated "Merged" Status
+### Automated "Done" Status
 
 The system is designed to keep your Markdown files and GitHub Project in sync automatically:
 
-1. **Developer sets status to `Done`**: When a developer finishes a task, they set the status to `Done` in the Markdown file within their branch.
+1. **Developer sets status to `In review`**: When a developer finishes a task, they set the status to `In review` in the Markdown file within their branch.
 2. **Pull Request Merge**: When the PR is merged into `master`, the **Tickets - on merge to master** workflow triggers.
 3. **Automated Update**:
    - The workflow updates the corresponding GitHub Issue to `closed`.
-   - It sets the Project v2 status to **Merged**.
-   - It **automatically modifies the Markdown file** in the `master` branch, changing `Status: Done` to `Status: Merged`.
+   - It sets the Project v2 status to **Done**.
+   - It **automatically modifies the Markdown file** in the `master` branch, changing `Status: In review` to `Status: Done`.
    - It commits and pushes this change back to `master`.
 
-### Manual Full Sync to Merged
+### Manual Full Sync to Done
 
-If you have many existing tickets that are already merged but still marked as `Done` in the files, you can perform a one-time full synchronization:
+If you have many existing tickets that are already merged but still marked as `In review` in the files, you can perform a one-time full synchronization:
 
 1. Go to the **Actions** tab in your GitHub repository.
 2. Select the **Tickets - on merge to master** workflow.
@@ -132,7 +131,7 @@ If you have many existing tickets that are already merged but still marked as `D
 4. Select **full** in the `Sync mode` dropdown.
 5. Click **Run workflow**.
 
-This will scan all ticket files, change `Status: Done` to `Status: Merged`, and commit the changes. It will also close corresponding GitHub issues and update the Project board.
+This will scan all ticket files, change `Status: In review` to `Status: Done`, and commit the changes. It will also close corresponding GitHub issues and update the Project board.
 
 ---
 

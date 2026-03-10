@@ -74,11 +74,11 @@ Interfaces are used as **context compression**, not for polymorphism by default.
 
 ### Status Field Requirements
 All Features (F-xxx), Tasks (T-xxx), and Bugs (B-xxx) **must** include `- Status:` with one of these values:
-- `Todo` - Not yet started
-- `In Progress` - Currently being worked on
-- `Done` - Implementation complete, awaiting review/merge
-- `Merged` - Merged into main branch
+- `Backlog` - Not yet started
+- `In progress` - Currently being worked on
+- `In review` - Implementation complete, awaiting review/merge
 - `Blocked` - Cannot proceed due to dependency or blocker
+- `Done` - Fully completed in the main line of work
 
 **Never use any other status value** for B/F/T items. The `scripts/check-work-items.sh` script validates this.
 

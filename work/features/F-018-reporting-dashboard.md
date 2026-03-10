@@ -1,7 +1,7 @@
 # F-018: Reporting Dashboard (Statistiky)
 
 - Type: Feature
-- Status: Todo
+- Status: Backlog
 - Source: Product baseline (analytics)
 
 ## Description

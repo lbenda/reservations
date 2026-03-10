@@ -1,7 +1,7 @@
 # F-006: Client Database (CRM)
 
 - Type: Feature
-- Status: Todo
+- Status: Backlog
 - Source: Product baseline (client management)
 
 ## Description

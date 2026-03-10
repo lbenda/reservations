@@ -1,7 +1,7 @@
 # F-009: Booking Website / Public Page (Veřejná rezervační stránka)
 
 - Type: Feature
-- Status: Todo
+- Status: Backlog
 - Source: Product baseline (public booking)
 
 ## Description
