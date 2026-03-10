@@ -54,9 +54,9 @@ jobs:
           # PROJECT_KIND: "organization" or "user"
           PROJECT_KIND: user
           PROJECT_OWNER: lbenda
-          PROJECT_NUMBER: "1"
+          PROJECT_NUMBER: "2"
 
           PROJECT_FIELD_STATUS: Status
           PROJECT_FIELD_AREA: Area
-          PROJECT_STATUS_MERGED: Merged
+          PROJECT_STATUS_DONE: Done
         run: node .github/scripts/tickets.js

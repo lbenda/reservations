@@ -25,7 +25,7 @@ const PROJECT_NUMBER = process.env.PROJECT_NUMBER;
 
 const FIELD_STATUS = process.env.PROJECT_FIELD_STATUS || "Status";
 const FIELD_AREA = process.env.PROJECT_FIELD_AREA || "Area";
-const STATUS_MERGED = process.env.PROJECT_STATUS_MERGED || "Merged";
+const STATUS_DONE = process.env.PROJECT_STATUS_DONE || "Done";
 
 const WATCH_ROOTS = [
     "work/bugs/",
@@ -139,10 +139,9 @@ function extractTicketIdFromPathOrFile(filePath) {
     return null;
 }
 
-function setStatusMergedInFile(filePath) {
+function setStatusDoneInFile(filePath) {
     const txt = fs.readFileSync(filePath, "utf8");
-    // Match "Status: Done" with any casing and optional trailing spaces/comments
-    const replaced = txt.replace(/^([\-\*]\s+Status:\s*)Done(\s*)$/mi, "$1Merged$2");
+    const replaced = txt.replace(/^([\-\*]\s+Status:\s*)In review(\s*)$/mi, "$1Done$2");
     if (replaced !== txt) {
         fs.writeFileSync(filePath, replaced, "utf8");
         return true;
@@ -202,11 +201,11 @@ async function syncToProject(projectMeta, issueNodeId, statusName, areaName) {
     }
 }
 
-async function syncMergedToProject(projectMeta, issueNodeId) {
+async function syncDoneToProject(projectMeta, issueNodeId) {
     if (!projectMeta?.statusFieldId) return;
-    const opt = projectMeta.statusOptions.get(STATUS_MERGED);
+    const opt = projectMeta.statusOptions.get(STATUS_DONE);
     if (!opt) {
-        console.warn(`[ProjectV2] Status option not found: "${STATUS_MERGED}"`);
+        console.warn(`[ProjectV2] Status option not found: "${STATUS_DONE}"`);
         return;
     }
     const itemId = await ensureItemInProject({
@@ -251,7 +250,7 @@ async function collectMergeFiles() {
         return files.filter(f => {
             if (!fs.existsSync(f) || fs.statSync(f).isDirectory()) return false;
             const content = fs.readFileSync(f, "utf8");
-            return content.includes("Status: Merged") || content.includes("Status: Done");
+            return content.includes("Status: In review") || content.includes("Status: Done");
         });
     }
 
@@ -363,7 +362,7 @@ async function runMerge() {
         return;
     }
 
-    await ensureLabel("status:Merged");
+    await ensureLabel("status:Done");
 
     const projectMeta = await loadProjectMeta();
     const touchedForCommit = [];
@@ -383,7 +382,7 @@ async function runMerge() {
 
                 const oldLabels = (current.labels || []).map(l => (typeof l === "string" ? l : l.name));
                 const kept = oldLabels.filter(l => !l.startsWith("status:"));
-                const nextLabels = [...new Set([...kept, "status:Merged"])];
+                const nextLabels = [...new Set([...kept, "status:Done"])];
 
                 await ghRest(`/repos/${OWNER}/${REPO}/issues/${issueNum}`, {
                     method: "PATCH",
@@ -397,15 +396,15 @@ async function runMerge() {
                 console.log(`Closed issue #${issueNum} for ${id}`);
 
                 if (projectMeta && PROJECT_TOKEN && current.node_id) {
-                    await syncMergedToProject(projectMeta, current.node_id);
+                    await syncDoneToProject(projectMeta, current.node_id);
                 }
             }
         }
 
         if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
-            const changed = setStatusMergedInFile(filePath);
+            const changed = setStatusDoneInFile(filePath);
             if (changed) {
-                console.log(`Updated status to Merged in file: ${filePath}`);
+                console.log(`Updated status to Done in file: ${filePath}`);
                 touchedForCommit.push(filePath);
             }
         }
@@ -415,11 +414,11 @@ async function runMerge() {
         sh(`git config user.name "github-actions[bot]"`);
         sh(`git config user.email "github-actions[bot]@users.noreply.github.com"`);
         sh(`git add ${touchedForCommit.map(x => `"${x}"`).join(" ")}`);
-        sh(`git commit -m "chore(tickets): mark merged tickets as Merged"`);
+        sh(`git commit -m "chore(tickets): mark reviewed tickets as Done"`);
         sh(`git push origin ${DEFAULT_BRANCH}`);
-        console.log(`Committed Merged status for ${touchedForCommit.length} file(s).`);
+        console.log(`Committed Done status for ${touchedForCommit.length} file(s).`);
     } else {
-        console.log("No files needed Status->Merged change.");
+        console.log("No files needed Status->Done change.");
     }
 }
 

@@ -1,0 +1,57 @@
+@businessId = 00000000-0000-0000-0000-000000000111
+@serviceId = replace-me
+
+### Create service
+POST http://localhost:8080/api/admin/services
+X-Business-Id: {{businessId}}
+Content-Type: application/json
+
+{
+  "serviceCode": "SVC-100",
+  "name": "Massage 60",
+  "description": "Relaxing massage",
+  "durationMinutes": 60,
+  "bufferBeforeMinutes": 5,
+  "bufferAfterMinutes": 10,
+  "minAdvanceMinutes": 120,
+  "maxAdvanceDays": 30,
+  "cancellationPolicy": "24 hours notice",
+  "priceAmount": "1200.00",
+  "priceCurrency": "CZK",
+  "isActive": true
+}
+
+### List active admin services
+GET http://localhost:8080/api/admin/services?isActive=true
+X-Business-Id: {{businessId}}
+
+### Get service by id
+GET http://localhost:8080/api/admin/services/{{serviceId}}
+X-Business-Id: {{businessId}}
+
+### Update service
+PATCH http://localhost:8080/api/admin/services/{{serviceId}}
+X-Business-Id: {{businessId}}
+Content-Type: application/json
+
+{
+  "serviceCode": "SVC-200",
+  "name": "Massage 90",
+  "description": "Deep tissue massage",
+  "durationMinutes": 90,
+  "bufferBeforeMinutes": 10,
+  "bufferAfterMinutes": 15,
+  "minAdvanceMinutes": 60,
+  "maxAdvanceDays": 14,
+  "cancellationPolicy": "12 hours notice",
+  "priceAmount": "1800.00",
+  "priceCurrency": "CZK",
+  "isActive": true
+}
+
+### Archive service
+POST http://localhost:8080/api/admin/services/{{serviceId}}/archive
+X-Business-Id: {{businessId}}
+
+### Public active services
+GET http://localhost:8080/api/public/services?businessId={{businessId}}

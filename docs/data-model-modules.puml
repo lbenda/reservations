@@ -1,0 +1,271 @@
+@startuml
+' Reservation System – LDM grouped by modules
+
+hide circle
+skinparam linetype ortho
+skinparam shadowing false
+
+skinparam package<<Tenant>> {
+  BackgroundColor #EAF2F8
+  BorderColor #A9C5E8
+}
+skinparam package<<Catalog>> {
+  BackgroundColor #ECF8F1
+  BorderColor #A8D6BA
+}
+skinparam package<<Clients>> {
+  BackgroundColor #FFF6E5
+  BorderColor #E7C47A
+}
+skinparam package<<Booking>> {
+  BackgroundColor #F3ECFF
+  BorderColor #C8B4F0
+}
+skinparam package<<Payments>> {
+  BackgroundColor #FDECEC
+  BorderColor #E5A9A9
+}
+skinparam package<<Packages>> {
+  BackgroundColor #F1F7FF
+  BorderColor #B7CBEA
+}
+skinparam package<<Audit>> {
+  BackgroundColor #F2F2F2
+  BorderColor #C9C9C9
+}
+skinparam package<<Integrations>> {
+  BackgroundColor #EFFFF5
+  BorderColor #A7D9BE
+}
+
+package "Tenant & Access" <<Tenant>> as tenant {
+  entity "Business" as business {
+    * id : uuid <<PK>>
+    --
+    * slug : string <<UK>>
+  }
+
+  entity "Location" as location {
+    * id : uuid <<PK>>
+    --
+    * businessId : uuid <<FK>>
+    * slug : string <<UK>>
+  }
+
+  entity "User" as user {
+    * id : uuid <<PK>>
+    --
+    * email : string <<UK>>
+  }
+
+  entity "Role" as role {
+    * id : uuid <<PK>>
+    --
+    * code : string <<UK>>
+  }
+
+  entity "BusinessUser" as businessUser {
+    * id : uuid <<PK>>
+    --
+    * businessId : uuid <<FK>>
+    * userId : uuid <<FK>>
+    * roleId : uuid <<FK>>
+    * businessUserKey : string <<UK>>
+  }
+
+  entity "ApiKey" as apiKey {
+    * id : uuid <<PK>>
+    --
+    * businessId : uuid <<FK>>
+    * keyId : string <<UK>>
+  }
+}
+
+package "Catalog & Staff" <<Catalog>> as catalog {
+  entity "Staff" as staff {
+    * id : uuid <<PK>>
+    --
+    * businessId : uuid <<FK>>
+    * locationId : uuid <<FK>>
+  }
+
+  entity "Service" as service {
+    * id : uuid <<PK>>
+    --
+    * businessId : uuid <<FK>>
+    * serviceCode : string <<UK>>
+  }
+
+  entity "StaffService" as staffService {
+    * id : uuid <<PK>>
+    --
+    * staffId : uuid <<FK>>
+    * serviceId : uuid <<FK>>
+    * staffServiceKey : string <<UK>>
+  }
+}
+
+package "Clients" <<Clients>> as clients {
+  entity "Client" as client {
+    * id : uuid <<PK>>
+    --
+    * businessId : uuid <<FK>>
+    * email : string <<UK>>
+    * phone : string <<UK>>
+  }
+
+  entity "Consent" as consent {
+    * id : uuid <<PK>>
+    --
+    * businessId : uuid <<FK>>
+    * clientId : uuid <<FK>>
+    * consentKey : string <<UK>>
+  }
+}
+
+package "Booking" <<Booking>> as bookingModule {
+  entity "Booking" as booking {
+    * id : uuid <<PK>>
+    --
+    * businessId : uuid <<FK>>
+    * locationId : uuid <<FK>>
+    * serviceId : uuid <<FK>>
+    * staffId : uuid <<FK>>
+    * clientId : uuid <<FK>>
+    * publicRef : string <<UK>>
+  }
+
+  entity "Block" as block {
+    * id : uuid <<PK>>
+    --
+    * businessId : uuid <<FK>>
+    * locationId : uuid <<FK>>
+    * staffId : uuid <<FK>>
+  }
+}
+
+package "Payments" <<Payments>> as payments {
+  entity "Payment" as payment {
+    * id : uuid <<PK>>
+    --
+    * businessId : uuid <<FK>>
+    * bookingId : uuid <<FK>>
+    * providerRef : string <<UK>>
+  }
+}
+
+package "Packages & Entitlements" <<Packages>> as packages {
+  entity "Package" as package {
+    * id : uuid <<PK>>
+    --
+    * businessId : uuid <<FK>>
+    * packageCode : string <<UK>>
+  }
+
+  entity "EntitlementLedger" as entitlement {
+    * id : uuid <<PK>>
+    --
+    * businessId : uuid <<FK>>
+    * clientId : uuid <<FK>>
+    * packageId : uuid <<FK>>
+    * bookingId : uuid <<FK>>
+  }
+}
+
+package "Audit" <<Audit>> as auditModule {
+  entity "AuditEvent" as audit {
+    * id : uuid <<PK>>
+    --
+    * businessId : uuid <<FK>>
+    * actorUserId : uuid <<FK>>
+    * bookingId : uuid <<FK>>
+    * clientId : uuid <<FK>>
+  }
+}
+
+package "Integrations" <<Integrations>> as integrations {
+  entity "WebhookEndpoint" as webhook {
+    * id : uuid <<PK>>
+    --
+    * businessId : uuid <<FK>>
+    * endpointKey : string <<UK>>
+  }
+
+  entity "WebhookDelivery" as delivery {
+    * id : uuid <<PK>>
+    --
+    * businessId : uuid <<FK>>
+    * webhookEndpointId : uuid <<FK>>
+    * eventId : uuid <<FK>>
+    * deliveryKey : string <<UK>>
+  }
+
+  entity "ExternalCalendar" as extCal {
+    * id : uuid <<PK>>
+    --
+    * businessId : uuid <<FK>>
+    * staffId : uuid <<FK>>
+    * providerAccountId : string <<UK>>
+  }
+
+  entity "BusyBlock" as busy {
+    * id : uuid <<PK>>
+    --
+    * businessId : uuid <<FK>>
+    * staffId : uuid <<FK>>
+    * externalCalendarId : uuid <<FK>>
+    * providerEventId : string <<UK>>
+  }
+}
+
+' Relationships (same as base model)
+business ||--o{ location : has
+business ||--o{ staff : has
+business ||--o{ service : has
+business ||--o{ client : has
+business ||--o{ booking : has
+business ||--o{ block : has
+business ||--o{ payment : has
+business ||--o{ package : has
+business ||--o{ entitlement : has
+business ||--o{ consent : has
+business ||--o{ audit : has
+business ||--o{ apiKey : has
+business ||--o{ webhook : has
+business ||--o{ delivery : has
+business ||--o{ extCal : has
+business ||--o{ busy : has
+
+location ||--o{ staff : hosts
+location ||--o{ booking : occurs_at
+location ||--o{ block : blocked_at
+
+user ||--o{ businessUser : member_of
+role ||--o{ businessUser : grants
+business ||--o{ businessUser : has_members
+
+staff ||--o{ staffService : can_do
+service ||--o{ staffService : is_assigned
+
+service ||--o{ booking : booked_service
+staff ||--o{ booking : booked_staff
+client ||--o{ booking : booked_by
+
+booking ||--o{ payment : paid_by
+client ||--o{ entitlement : owns
+package ||--o{ entitlement : ledger_for
+booking ||--o{ entitlement : redeemed_in
+
+client ||--o{ consent : has
+user ||--o{ audit : acts
+booking ||--o{ audit : relates
+client ||--o{ audit : relates
+
+webhook ||--o{ delivery : sends
+audit ||--o{ delivery : emits
+
+staff ||--o{ extCal : syncs
+extCal ||--o{ busy : imports
+staff ||--o{ busy : blocks
+
+@enduml

@@ -9,6 +9,8 @@ A reservation system with a Kotlin backend and React web frontend.
 The system consists of a server (Kotlin/Ktor) and a web UI (React/TypeScript/Vite).
 Business logic lives in the server, the web UI communicates via REST API.
 
+Database is PostgreSQL with jOOQ as the database access layer.
+
 ---
 
 ## Project Structure
@@ -46,6 +48,23 @@ Business logic lives in the server, the web UI communicates via REST API.
 
 Server starts on http://localhost:8080
 
+## Generate jOOQ Sources
+
+Database schema is managed by Flyway migrations. Generate jOOQ Kotlin tables after schema changes:
+
+```bash
+./gradlew :server:generateJooq
+```
+
+If Docker is not available, point codegen to an existing PostgreSQL instance:
+
+```bash
+export JOOQ_DB_URL=jdbc:postgresql://localhost:5432/your_db
+export JOOQ_DB_USER=your_user
+export JOOQ_DB_PASS=your_pass
+./gradlew :server:generateJooq
+```
+
 ## Running Web UI
 
 ```bash
@@ -72,14 +91,31 @@ or
 bash -c "./scripts/ai-briefing.sh F-007 > /tmp/AI_BRIEFING_F-007.md"
 ```
 
+## Running Tests
+
+By default, database-backed tests run using Testcontainers (Docker required).
+
+```bash
+./gradlew :server:test
+```
+
+To run against an existing PostgreSQL instance (no Docker), set:
+
+```bash
+export TEST_DB_URL=jdbc:postgresql://localhost:5432/your_db
+export TEST_DB_USER=your_user
+export TEST_DB_PASS=your_pass
+./gradlew :server:test
+```
+
 ---
 
 ## GitHub Actions
 
-Tento repozitar pouziva **GitHub Actions** k synchronizaci:
-- Markdown ticketu v repozitari
+This repo use **GitHub Actions** for synchronisation:
+- Markdown tickests in repository
 - GitHub Issues
 - GitHub Projects (v2)
 
-Repo je **zdrojem pravdy**.
-Issues a Project slouzi pouze jako stavova projekce.
+Repo is **source of truth**.
+Issues and Project is used only for view.
