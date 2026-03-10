@@ -45,7 +45,7 @@ jobs:
 
           PROJECT_KIND: user
           PROJECT_OWNER: lbenda
-          PROJECT_NUMBER: "1"
+          PROJECT_NUMBER: "2"
 
           PROJECT_FIELD_STATUS: Status
           PROJECT_FIELD_AREA: Area

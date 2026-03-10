@@ -1,7 +1,7 @@
 # T-014: Service Integration Tests
 
 - Type: Task
-- Status: Todo
+- Status: Done
 - Feature: F-001
 - Owner: qa
 - Related modules: backend, tests

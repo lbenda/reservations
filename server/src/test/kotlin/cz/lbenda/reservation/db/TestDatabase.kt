@@ -66,10 +66,8 @@ object TestDatabase {
     }
 
     fun close() {
-        if (dataSource is HikariDataSource) {
-            dataSource.close()
-        }
-        container?.stop()
+        // The test suite shares a single database instance across test classes.
+        // Per-class shutdown would close the pool for subsequent tests.
     }
 
     private fun readExternalSettings(): DbSettings? {

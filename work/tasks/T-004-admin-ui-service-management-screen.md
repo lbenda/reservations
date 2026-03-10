@@ -1,7 +1,9 @@
 # T-004: Admin UI – Service Management Screen
 
 - Parent: F-001
-- Status: Todo
+- Type: Task
+- Status: Done
+- Feature: F-001
 - Owner: frontend
 - Related modules: admin-ui
 - Depends on: T-003

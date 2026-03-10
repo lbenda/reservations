@@ -1,7 +1,9 @@
 # T-005: Public Booking UI – Service Selection
 
 - Parent: F-001
-- Status: Todo
+- Type: Task
+- Status: Done
+- Feature: F-001
 - Owner: frontend
 - Related modules: public-ui
 - Depends on: T-003

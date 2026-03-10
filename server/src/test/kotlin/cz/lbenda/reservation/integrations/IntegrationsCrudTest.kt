@@ -2,9 +2,7 @@ package cz.lbenda.reservation.integrations
 
 import cz.lbenda.reservation.audit.AuditRepository
 import cz.lbenda.reservation.audit.NewAuditEvent
-import cz.lbenda.reservation.catalog.NewService
 import cz.lbenda.reservation.catalog.NewStaff
-import cz.lbenda.reservation.catalog.ServiceRepository
 import cz.lbenda.reservation.catalog.StaffRepository
 import cz.lbenda.reservation.db.TestDatabase
 import cz.lbenda.reservation.tenant.*
@@ -27,7 +25,6 @@ class IntegrationsCrudTest {
     private val businessRepository = BusinessRepository(dsl)
     private val userRepository = UserRepository(dsl)
     private val staffRepository = StaffRepository(dsl)
-    private val serviceRepository = ServiceRepository(dsl)
     private val auditRepository = AuditRepository(dsl)
     private val webhookEndpointRepository = WebhookEndpointRepository(dsl)
     private val webhookDeliveryRepository = WebhookDeliveryRepository(dsl)

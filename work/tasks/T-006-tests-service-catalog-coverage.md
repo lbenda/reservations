@@ -2,7 +2,7 @@
 
 - Type: Task
 - Parent: F-001
-- Status: In Progress
+- Status: Done
 - Feature: F-001
 - Owner: qa
 - Related modules: backend, frontend

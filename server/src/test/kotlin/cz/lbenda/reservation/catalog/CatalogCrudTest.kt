@@ -46,6 +46,9 @@ class CatalogCrudTest {
                 durationMinutes = 60,
                 bufferBeforeMinutes = 5,
                 bufferAfterMinutes = 10,
+                minAdvanceMinutes = 120,
+                maxAdvanceDays = 30,
+                cancellationPolicy = "24 hours notice",
                 priceAmount = BigDecimal("1200.00"),
                 priceCurrency = "CZK",
                 isActive = true
@@ -65,6 +68,9 @@ class CatalogCrudTest {
                 durationMinutes = 70,
                 bufferBeforeMinutes = 10,
                 bufferAfterMinutes = 10,
+                minAdvanceMinutes = 60,
+                maxAdvanceDays = 14,
+                cancellationPolicy = "12 hours notice",
                 priceAmount = BigDecimal("1300.00"),
                 priceCurrency = "CZK",
                 isActive = false
@@ -142,6 +148,9 @@ class CatalogCrudTest {
                 durationMinutes = 30,
                 bufferBeforeMinutes = null,
                 bufferAfterMinutes = null,
+                minAdvanceMinutes = null,
+                maxAdvanceDays = null,
+                cancellationPolicy = null,
                 priceAmount = BigDecimal("600.00"),
                 priceCurrency = "CZK",
                 isActive = true

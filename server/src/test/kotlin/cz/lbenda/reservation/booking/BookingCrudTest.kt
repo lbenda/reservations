@@ -68,6 +68,9 @@ class BookingCrudTest {
                 durationMinutes = 60,
                 bufferBeforeMinutes = 5,
                 bufferAfterMinutes = 10,
+                minAdvanceMinutes = 120,
+                maxAdvanceDays = 30,
+                cancellationPolicy = "24 hours notice",
                 priceAmount = BigDecimal("1200.00"),
                 priceCurrency = "CZK",
                 isActive = true

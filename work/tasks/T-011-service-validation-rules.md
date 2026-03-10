@@ -1,7 +1,7 @@
 # T-011: Service Validation Rules
 
 - Type: Task
-- Status: Todo
+- Status: Done
 - Feature: F-001
 - Owner: backend
 - Related modules: services, domain

@@ -1,7 +1,9 @@
 # T-003: Admin API – Service CRUD
 
 - Parent: F-001
-- Status: Todo
+- Type: Task
+- Status: Done
+- Feature: F-001
 - Owner: backend
 - Related modules: api, auth
 - Depends on: T-002

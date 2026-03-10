@@ -148,6 +148,9 @@ Service offered by the business. Optional internal business code.
 | durationMinutes | duration_minutes | integer | yes | Default duration in minutes. |
 | bufferBeforeMinutes | buffer_before_minutes | integer | no | Setup buffer before booking. |
 | bufferAfterMinutes | buffer_after_minutes | integer | no | Cleanup buffer after booking. |
+| minAdvanceMinutes | min_advance_minutes | integer | no | Minimum lead time before booking. |
+| maxAdvanceDays | max_advance_days | integer | no | Maximum days ahead for booking. |
+| cancellationPolicy | cancellation_policy | text | no | Customer-facing cancellation policy. |
 | priceAmount | price_amount | numeric(12,2) | yes | Base price amount. |
 | priceCurrency | price_currency | char(3) | yes | ISO 4217 currency code. |
 | isActive | is_active | boolean | yes | Service availability flag. |

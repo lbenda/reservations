@@ -1,6 +1,7 @@
 package cz.lbenda.reservation.audit
 
 import org.jooq.DSLContext
+import org.jooq.JSONB
 import cz.lbenda.reservation.jooq.tables.references.*
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
@@ -16,7 +17,7 @@ class AuditRepository(private val dsl: DSLContext) {
             .set(AUDIT_EVENT.BOOKING_ID, newEvent.bookingId)
             .set(AUDIT_EVENT.CLIENT_ID, newEvent.clientId)
             .set(AUDIT_EVENT.EVENT_TYPE, newEvent.eventType)
-            .set(AUDIT_EVENT.PAYLOAD, newEvent.payload)
+            .set(AUDIT_EVENT.PAYLOAD, newEvent.payload?.let(JSONB::valueOf))
             .set(AUDIT_EVENT.OCCURRED_AT, newEvent.occurredAt)
             .set(AUDIT_EVENT.CREATED_AT, now)
             .returning(
@@ -39,7 +40,7 @@ class AuditRepository(private val dsl: DSLContext) {
             bookingId = record.get(AUDIT_EVENT.BOOKING_ID),
             clientId = record.get(AUDIT_EVENT.CLIENT_ID),
             eventType = record.get(AUDIT_EVENT.EVENT_TYPE)!!,
-            payload = record.get(AUDIT_EVENT.PAYLOAD),
+            payload = record.get(AUDIT_EVENT.PAYLOAD)?.data(),
             occurredAt = record.get(AUDIT_EVENT.OCCURRED_AT)!!,
             createdAt = record.get(AUDIT_EVENT.CREATED_AT)!!
         )
@@ -68,7 +69,7 @@ class AuditRepository(private val dsl: DSLContext) {
             bookingId = record.get(AUDIT_EVENT.BOOKING_ID),
             clientId = record.get(AUDIT_EVENT.CLIENT_ID),
             eventType = record.get(AUDIT_EVENT.EVENT_TYPE)!!,
-            payload = record.get(AUDIT_EVENT.PAYLOAD),
+            payload = record.get(AUDIT_EVENT.PAYLOAD)?.data(),
             occurredAt = record.get(AUDIT_EVENT.OCCURRED_AT)!!,
             createdAt = record.get(AUDIT_EVENT.CREATED_AT)!!
         )
@@ -79,7 +80,7 @@ class AuditRepository(private val dsl: DSLContext) {
             .set(AUDIT_EVENT.BOOKING_ID, update.bookingId)
             .set(AUDIT_EVENT.CLIENT_ID, update.clientId)
             .set(AUDIT_EVENT.EVENT_TYPE, update.eventType)
-            .set(AUDIT_EVENT.PAYLOAD, update.payload)
+            .set(AUDIT_EVENT.PAYLOAD, update.payload?.let(JSONB::valueOf))
             .set(AUDIT_EVENT.OCCURRED_AT, update.occurredAt)
             .where(AUDIT_EVENT.ID.eq(id))
             .returning(
@@ -102,7 +103,7 @@ class AuditRepository(private val dsl: DSLContext) {
             bookingId = record.get(AUDIT_EVENT.BOOKING_ID),
             clientId = record.get(AUDIT_EVENT.CLIENT_ID),
             eventType = record.get(AUDIT_EVENT.EVENT_TYPE)!!,
-            payload = record.get(AUDIT_EVENT.PAYLOAD),
+            payload = record.get(AUDIT_EVENT.PAYLOAD)?.data(),
             occurredAt = record.get(AUDIT_EVENT.OCCURRED_AT)!!,
             createdAt = record.get(AUDIT_EVENT.CREATED_AT)!!
         )

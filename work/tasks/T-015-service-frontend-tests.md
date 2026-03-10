@@ -1,7 +1,7 @@
 # T-015: Service Frontend Tests
 
 - Type: Task
-- Status: Todo
+- Status: Done
 - Feature: F-001
 - Owner: frontend
 - Related modules: admin-ui, public-ui

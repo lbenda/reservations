@@ -112,10 +112,10 @@ export TEST_DB_PASS=your_pass
 
 ## GitHub Actions
 
-Tento repozitar pouziva **GitHub Actions** k synchronizaci:
-- Markdown ticketu v repozitari
+This repo use **GitHub Actions** for synchronisation:
+- Markdown tickests in repository
 - GitHub Issues
 - GitHub Projects (v2)
 
-Repo je **zdrojem pravdy**.
-Issues a Project slouzi pouze jako stavova projekce.
+Repo is **source of truth**.
+Issues and Project is used only for view.

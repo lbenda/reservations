@@ -1,0 +1,200 @@
+:root {
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+  color: #1c1917;
+  background:
+    radial-gradient(circle at top left, rgba(245, 158, 11, 0.24), transparent 30%),
+    radial-gradient(circle at top right, rgba(14, 165, 233, 0.18), transparent 28%),
+    linear-gradient(180deg, #fff9f1 0%, #f4efe7 100%);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+.shell {
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.hero,
+.panel {
+  backdrop-filter: blur(14px);
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(28, 25, 23, 0.08);
+  border-radius: 24px;
+  box-shadow: 0 18px 45px rgba(120, 53, 15, 0.08);
+}
+
+.hero {
+  padding: 28px;
+  margin-bottom: 20px;
+}
+
+.grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.panel {
+  padding: 22px;
+}
+
+.accent {
+  background: rgba(255, 251, 235, 0.88);
+}
+
+.publicPanel {
+  background: rgba(240, 249, 255, 0.86);
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.72rem;
+  color: #b45309;
+}
+
+.lede,
+.muted,
+.card p,
+.selection {
+  color: #57534e;
+}
+
+.panelHeader,
+.toolbar,
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.toolbar {
+  margin: 16px 0;
+}
+
+.list,
+.publicGrid,
+.form {
+  display: grid;
+  gap: 12px;
+}
+
+.card,
+.serviceTile,
+.selection,
+.banner {
+  border-radius: 18px;
+  border: 1px solid rgba(28, 25, 23, 0.08);
+}
+
+.card,
+.selection {
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.84);
+}
+
+.serviceTile {
+  padding: 16px;
+  text-align: left;
+  background: white;
+}
+
+.serviceTile.selected {
+  border-color: #0f766e;
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.14);
+}
+
+.status {
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.status.active {
+  color: #15803d;
+}
+
+.status.archived {
+  color: #b91c1c;
+}
+
+.form {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.field span {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.field small {
+  color: #b91c1c;
+}
+
+.span {
+  grid-column: 1 / -1;
+}
+
+input,
+textarea,
+button {
+  border: 1px solid rgba(28, 25, 23, 0.14);
+  border-radius: 14px;
+  padding: 11px 13px;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+button {
+  cursor: pointer;
+}
+
+.primary {
+  background: linear-gradient(135deg, #ea580c, #f59e0b);
+  color: white;
+  border: none;
+}
+
+.ghost {
+  background: transparent;
+}
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toggle input {
+  width: auto;
+  padding: 0;
+}
+
+.banner {
+  margin-top: 14px;
+  padding: 12px 14px;
+  background: rgba(255, 247, 237, 0.96);
+}
+
+@media (max-width: 1100px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

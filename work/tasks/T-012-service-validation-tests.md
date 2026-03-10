@@ -1,7 +1,7 @@
 # T-012: Service Validation Tests
 
 - Type: Task
-- Status: Todo
+- Status: Done
 - Feature: F-001
 - Owner: backend
 - Related modules: services, tests

@@ -1,7 +1,7 @@
 # F-001: Service Catalog
 
 - Type: Feature
-- Status: Todo
+- Status: Done
 - Source: Product baseline
 
 ## Description
@@ -40,4 +40,5 @@ Current implementation gaps:
 - [T-015: Service Frontend Tests](../tasks/T-015-service-frontend-tests.md)
 
 ## Related Documentation
-- docs/domain/service.md (Planned)
+- docs/API.md
+- docs/api-tests.http
