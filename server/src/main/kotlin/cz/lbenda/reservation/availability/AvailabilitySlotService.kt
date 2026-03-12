@@ -74,8 +74,8 @@ class DefaultAvailabilitySlotService(
                         bufferBeforeMinutes = service.bufferBeforeMinutes ?: 0,
                         bufferAfterMinutes = service.bufferAfterMinutes ?: 0,
                         slotIntervalMinutes = query.slotIntervalMinutes,
-                        workStart = ZonedDateTime.of(snapshot.date, workRange.startTime, zoneId).toOffsetDateTime(),
-                        workEnd = ZonedDateTime.of(snapshot.date, workRange.endTime, zoneId).toOffsetDateTime(),
+                        workStart = ZonedDateTime.of(snapshot.date, workRange.startTime, zoneId),
+                        workEnd = ZonedDateTime.of(snapshot.date, workRange.endTime, zoneId),
                         occupiedRanges = occupiedRanges
                     )
                 }
@@ -108,26 +108,32 @@ class DefaultAvailabilitySlotService(
         bufferBeforeMinutes: Int,
         bufferAfterMinutes: Int,
         slotIntervalMinutes: Int,
-        workStart: OffsetDateTime,
-        workEnd: OffsetDateTime,
+        workStart: ZonedDateTime,
+        workEnd: ZonedDateTime,
         occupiedRanges: List<OccupiedTimeRange>
     ): List<AvailabilitySlot> {
         val slots = mutableListOf<AvailabilitySlot>()
         var candidateStart = workStart
+        val workStartOffset = workStart.toOffsetDateTime()
+        val workEndOffset = workEnd.toOffsetDateTime()
 
         while (!candidateStart.plusMinutes(serviceDurationMinutes.toLong()).isAfter(workEnd)) {
             val candidateEnd = candidateStart.plusMinutes(serviceDurationMinutes.toLong())
             val request = AvailabilityRequest(
-                startAt = candidateStart,
-                endAt = candidateEnd,
+                startAt = candidateStart.toOffsetDateTime(),
+                endAt = candidateEnd.toOffsetDateTime(),
                 bufferBeforeMinutes = bufferBeforeMinutes,
                 bufferAfterMinutes = bufferAfterMinutes
             )
 
-            if (!availabilityConflictChecker.hasConflict(request, occupiedRanges)) {
+            if (
+                !request.occupiedStartAt.isBefore(workStartOffset) &&
+                !request.occupiedEndAt.isAfter(workEndOffset) &&
+                !availabilityConflictChecker.hasConflict(request, occupiedRanges)
+            ) {
                 slots += AvailabilitySlot(
-                    startAt = candidateStart,
-                    endAt = candidateEnd,
+                    startAt = candidateStart.toOffsetDateTime(),
+                    endAt = candidateEnd.toOffsetDateTime(),
                     staffId = staffId
                 )
             }

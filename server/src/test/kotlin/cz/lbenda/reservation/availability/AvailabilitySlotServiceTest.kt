@@ -155,6 +155,78 @@ class AvailabilitySlotServiceTest {
         assertTrue(slots.all { it.staffId == assignedStaff.id })
     }
 
+    @Test
+    fun `slot generation skips nonexistent local times during spring forward DST`() {
+        val business = createBusiness("dst")
+        val location = createLocation(business)
+        val staff = createStaff(business, location, "Eva")
+        val service = createService(
+            business = business,
+            name = "DST Massage",
+            durationMinutes = 30
+        )
+        assignStaffToService(staff.id, service.id)
+        createWeeklySchedule(
+            staffId = staff.id,
+            rangeType = StaffScheduleRangeType.WORK,
+            startTime = LocalTime.of(1, 0),
+            endTime = LocalTime.of(4, 0),
+            dayOfWeek = 7
+        )
+
+        val slots = slotService.generateSlots(
+            AvailabilitySlotQuery(
+                businessId = business.id,
+                serviceId = service.id,
+                staffId = staff.id,
+                startDate = LocalDate.of(2026, 3, 29),
+                endDate = LocalDate.of(2026, 3, 29),
+                timezone = "Europe/Prague",
+                slotIntervalMinutes = 30
+            )
+        )
+
+        assertEquals(
+            listOf("01:00", "01:30", "03:00", "03:30"),
+            slots.map { it.startAt.atZoneSameInstant(ZoneId.of("Europe/Prague")).toLocalTime().toString().substring(0, 5) }
+        )
+    }
+
+    @Test
+    fun `slot generation requires buffers to stay inside working range`() {
+        val business = createBusiness("buffers")
+        val location = createLocation(business)
+        val staff = createStaff(business, location, "Eva")
+        val service = createService(
+            business = business,
+            name = "Buffered Massage",
+            durationMinutes = 30,
+            bufferBeforeMinutes = 15,
+            bufferAfterMinutes = 15
+        )
+        assignStaffToService(staff.id, service.id)
+        createWeeklySchedule(
+            staffId = staff.id,
+            rangeType = StaffScheduleRangeType.WORK,
+            startTime = LocalTime.of(9, 0),
+            endTime = LocalTime.of(10, 0)
+        )
+
+        val slots = slotService.generateSlots(
+            AvailabilitySlotQuery(
+                businessId = business.id,
+                serviceId = service.id,
+                staffId = staff.id,
+                startDate = LocalDate.of(2026, 3, 23),
+                endDate = LocalDate.of(2026, 3, 23),
+                timezone = "UTC",
+                slotIntervalMinutes = 15
+            )
+        )
+
+        assertEquals(listOf("09:15"), slots.map { it.startAt.toLocalTime().toString().substring(0, 5) })
+    }
+
     private fun createBusiness(slugPrefix: String): Business =
         businessRepository.create(
             NewBusiness(
@@ -200,7 +272,13 @@ class AvailabilitySlotServiceTest {
             )
         )
 
-    private fun createService(business: Business, name: String, durationMinutes: Int) =
+    private fun createService(
+        business: Business,
+        name: String,
+        durationMinutes: Int,
+        bufferBeforeMinutes: Int = 0,
+        bufferAfterMinutes: Int = 0
+    ) =
         serviceRepository.create(
             NewService(
                 id = Uuid7.new(),
@@ -209,8 +287,8 @@ class AvailabilitySlotServiceTest {
                 name = name,
                 description = null,
                 durationMinutes = durationMinutes,
-                bufferBeforeMinutes = 0,
-                bufferAfterMinutes = 0,
+                bufferBeforeMinutes = bufferBeforeMinutes,
+                bufferAfterMinutes = bufferAfterMinutes,
                 minAdvanceMinutes = 0,
                 maxAdvanceDays = 30,
                 cancellationPolicy = null,
@@ -236,13 +314,14 @@ class AvailabilitySlotServiceTest {
         staffId: UUID,
         rangeType: StaffScheduleRangeType,
         startTime: LocalTime,
-        endTime: LocalTime
+        endTime: LocalTime,
+        dayOfWeek: Int = 1
     ) {
         staffWeeklyScheduleRepository.create(
             NewStaffWeeklySchedule(
                 id = Uuid7.new(),
                 staffId = staffId,
-                dayOfWeek = 1,
+                dayOfWeek = dayOfWeek,
                 rangeType = rangeType,
                 startTime = startTime,
                 endTime = endTime
