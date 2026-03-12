@@ -50,3 +50,40 @@ create table staff_service (
 );
 
 create unique index uq_staff_service_key on staff_service(staff_service_key);
+
+create table staff_weekly_schedule (
+    id uuid primary key,
+    staff_id uuid not null references staff(id) on delete cascade,
+    day_of_week smallint not null,
+    range_type varchar(16) not null,
+    start_time time not null,
+    end_time time not null,
+    created_at timestamptz not null default now(),
+    updated_at timestamptz not null default now(),
+    constraint chk_staff_weekly_schedule_day_of_week check (day_of_week between 1 and 7),
+    constraint chk_staff_weekly_schedule_range_type check (range_type in ('WORK', 'BREAK')),
+    constraint chk_staff_weekly_schedule_time_order check (start_time < end_time)
+);
+
+create index idx_staff_weekly_schedule_staff_id on staff_weekly_schedule(staff_id);
+create unique index uq_staff_weekly_schedule_slot
+    on staff_weekly_schedule(staff_id, day_of_week, range_type, start_time, end_time);
+
+create table staff_schedule_exception (
+    id uuid primary key,
+    staff_id uuid not null references staff(id) on delete cascade,
+    exception_date date not null,
+    range_type varchar(16) not null,
+    start_time time,
+    end_time time,
+    note text,
+    created_at timestamptz not null default now(),
+    updated_at timestamptz not null default now(),
+    constraint chk_staff_schedule_exception_range_type check (range_type in ('WORK', 'BREAK', 'DAY_OFF')),
+    constraint chk_staff_schedule_exception_time_order check (
+        (range_type = 'DAY_OFF' and start_time is null and end_time is null) or
+        (range_type <> 'DAY_OFF' and start_time is not null and end_time is not null and start_time < end_time)
+    )
+);
+
+create index idx_staff_schedule_exception_staff_date on staff_schedule_exception(staff_id, exception_date);

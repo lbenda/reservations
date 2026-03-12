@@ -1,8 +1,8 @@
 # F-002: Staff & Working Hours
 
 - Type: Feature
-- Status: Backlog
-- Source: Product baseline (Reservio-like core)
+- Status: In review
+- Source: Product baseline
 
 ## Description
 Support one or more staff members with per-staff working hours, breaks and service assignment.
@@ -27,9 +27,9 @@ Current implementation gaps:
 - Exceptions override weekly schedule
 
 ## Related Tasks
-- T-010: Data model - Staff + schedules
-- T-011: Admin UI - Staff management
-- T-012: Availability engine - staff schedule input
+- T-016: Data model - staff schedules and exceptions
+- T-017: Admin API/UI - staff management and schedule editing
+- T-018: Availability integration - staff schedule input
 
 ## Related Documentation
 - docs/domain/staff.md (Planned)

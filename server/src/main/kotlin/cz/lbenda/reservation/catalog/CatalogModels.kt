@@ -1,6 +1,8 @@
 package cz.lbenda.reservation.catalog
 
 import java.time.OffsetDateTime
+import java.time.LocalDate
+import java.time.LocalTime
 import java.util.UUID
 import java.math.BigDecimal
 
@@ -34,6 +36,69 @@ data class StaffUpdate(
     val phone: String?,
     val bio: String?,
     val status: String
+)
+
+enum class StaffScheduleRangeType {
+    WORK,
+    BREAK,
+    DAY_OFF
+}
+
+data class StaffWeeklySchedule(
+    val id: UUID,
+    val staffId: UUID,
+    val dayOfWeek: Int,
+    val rangeType: StaffScheduleRangeType,
+    val startTime: LocalTime,
+    val endTime: LocalTime,
+    val createdAt: OffsetDateTime,
+    val updatedAt: OffsetDateTime
+)
+
+data class NewStaffWeeklySchedule(
+    val id: UUID,
+    val staffId: UUID,
+    val dayOfWeek: Int,
+    val rangeType: StaffScheduleRangeType,
+    val startTime: LocalTime,
+    val endTime: LocalTime
+)
+
+data class StaffWeeklyScheduleUpdate(
+    val dayOfWeek: Int,
+    val rangeType: StaffScheduleRangeType,
+    val startTime: LocalTime,
+    val endTime: LocalTime
+)
+
+data class StaffScheduleException(
+    val id: UUID,
+    val staffId: UUID,
+    val exceptionDate: LocalDate,
+    val rangeType: StaffScheduleRangeType,
+    val startTime: LocalTime?,
+    val endTime: LocalTime?,
+    val note: String?,
+    val createdAt: OffsetDateTime,
+    val updatedAt: OffsetDateTime
+)
+
+data class NewStaffScheduleException(
+    val id: UUID,
+    val staffId: UUID,
+    val exceptionDate: LocalDate,
+    val rangeType: StaffScheduleRangeType,
+    val startTime: LocalTime?,
+    val endTime: LocalTime?,
+    val note: String?
+)
+
+data class StaffScheduleExceptionUpdate(
+    val exceptionDate: LocalDate,
+    val rangeType: StaffScheduleRangeType,
+    val startTime: LocalTime?,
+    val endTime: LocalTime?,
+    val note: String?
 )
 
 data class Service(

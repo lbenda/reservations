@@ -3,6 +3,7 @@ package cz.lbenda.reservation
 import cz.lbenda.reservation.catalog.Service
 import cz.lbenda.reservation.catalog.ServiceCatalogService
 import cz.lbenda.reservation.catalog.ServiceCommand
+import cz.lbenda.reservation.catalog.StaffValidationException
 import cz.lbenda.reservation.catalog.ServiceValidationException
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
@@ -124,13 +125,17 @@ fun Throwable.toErrorResponse(): ErrorResponse =
             message = "Validation failed",
             errors = errors.map { FieldErrorResponse(it.field, it.message) }
         )
+        is StaffValidationException -> ErrorResponse(
+            message = "Validation failed",
+            errors = errors.map { FieldErrorResponse(it.field, it.message) }
+        )
         is IllegalArgumentException -> ErrorResponse(message = message ?: "Bad request")
         else -> ErrorResponse(message = "Internal server error")
     }
 
 // TODO [F-016]: Replace the temporary X-Business-Id header with business resolution
 // from the authenticated admin context once roles/permissions auth wiring is implemented.
-private fun io.ktor.server.application.ApplicationCall.requireBusinessIdHeader(): UUID =
+internal fun io.ktor.server.application.ApplicationCall.requireBusinessIdHeader(): UUID =
     request.headers["X-Business-Id"]?.let(UUID::fromString)
         ?: throw IllegalArgumentException("Missing required header X-Business-Id")
 

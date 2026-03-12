@@ -17,7 +17,8 @@ body {
 
 button,
 input,
-textarea {
+textarea,
+select {
   font: inherit;
 }
 
@@ -44,6 +45,13 @@ textarea {
   display: grid;
   gap: 20px;
   grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.staffGrid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 1.1fr 1.2fr 1.7fr;
+  margin-top: 20px;
 }
 
 .panel {
@@ -88,9 +96,17 @@ textarea {
 
 .list,
 .publicGrid,
-.form {
+.form,
+.miniForm,
+.subgrid,
+.stack {
   display: grid;
   gap: 12px;
+}
+
+.subgrid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 16px;
 }
 
 .card,
@@ -155,6 +171,7 @@ textarea {
 
 input,
 textarea,
+select,
 button {
   border: 1px solid rgba(28, 25, 23, 0.14);
   border-radius: 14px;
@@ -193,8 +210,44 @@ button {
   background: rgba(255, 247, 237, 0.96);
 }
 
+.staffCard {
+  display: grid;
+  gap: 10px;
+}
+
+.selectedCard {
+  border-color: #0f766e;
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.14);
+}
+
+.cardSelect {
+  text-align: left;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.cardSelect strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.miniForm {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.compact {
+  align-items: baseline;
+}
+
+.stack h3 {
+  margin: 0;
+}
+
 @media (max-width: 1100px) {
-  .grid {
+  .grid,
+  .staffGrid,
+  .subgrid {
     grid-template-columns: 1fr;
   }
 }

@@ -51,6 +51,8 @@ object TestDatabase {
                 payment,
                 consent,
                 client,
+                staff_schedule_exception,
+                staff_weekly_schedule,
                 staff_service,
                 staff,
                 service,
