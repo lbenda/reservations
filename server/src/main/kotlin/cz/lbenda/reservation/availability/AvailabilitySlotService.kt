@@ -3,6 +3,7 @@ package cz.lbenda.reservation.availability
 import cz.lbenda.reservation.catalog.ServiceRepository
 import cz.lbenda.reservation.catalog.StaffRepository
 import cz.lbenda.reservation.catalog.StaffServiceRepository
+import java.time.Clock
 import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.time.ZoneId
@@ -35,7 +36,8 @@ class DefaultAvailabilitySlotService(
     private val serviceRepository: ServiceRepository,
     private val staffAvailabilityScheduleService: StaffAvailabilityScheduleService,
     private val staffOccupiedTimeService: StaffOccupiedTimeService,
-    private val availabilityConflictChecker: AvailabilityConflictChecker
+    private val availabilityConflictChecker: AvailabilityConflictChecker,
+    private val clock: Clock = Clock.systemUTC()
 ) : AvailabilitySlotService {
     override fun generateSlots(query: AvailabilitySlotQuery): List<AvailabilitySlot> {
         require(!query.endDate.isBefore(query.startDate)) { "endDate must not be before startDate" }
@@ -43,6 +45,11 @@ class DefaultAvailabilitySlotService(
 
         val zoneId = ZoneId.of(query.timezone)
         val service = serviceRepository.findById(query.businessId, query.serviceId) ?: return emptyList()
+        if (!service.isActive) return emptyList()
+
+        val now = ZonedDateTime.now(clock).withZoneSameInstant(zoneId)
+        val earliestAllowedStart = now.plusMinutes((service.minAdvanceMinutes ?: 0).toLong())
+        val latestAllowedDate = service.maxAdvanceDays?.let { now.toLocalDate().plusDays(it.toLong()) }
         val candidateStaffIds = resolveCandidateStaffIds(query)
 
         return candidateStaffIds.flatMap { staffId ->
@@ -76,7 +83,9 @@ class DefaultAvailabilitySlotService(
                         slotIntervalMinutes = query.slotIntervalMinutes,
                         workStart = ZonedDateTime.of(snapshot.date, workRange.startTime, zoneId),
                         workEnd = ZonedDateTime.of(snapshot.date, workRange.endTime, zoneId),
-                        occupiedRanges = occupiedRanges
+                        occupiedRanges = occupiedRanges,
+                        earliestAllowedStart = earliestAllowedStart,
+                        latestAllowedDate = latestAllowedDate
                     )
                 }
             }
@@ -110,7 +119,9 @@ class DefaultAvailabilitySlotService(
         slotIntervalMinutes: Int,
         workStart: ZonedDateTime,
         workEnd: ZonedDateTime,
-        occupiedRanges: List<OccupiedTimeRange>
+        occupiedRanges: List<OccupiedTimeRange>,
+        earliestAllowedStart: ZonedDateTime,
+        latestAllowedDate: LocalDate?
     ): List<AvailabilitySlot> {
         val slots = mutableListOf<AvailabilitySlot>()
         var candidateStart = workStart
@@ -127,6 +138,8 @@ class DefaultAvailabilitySlotService(
             )
 
             if (
+                !candidateStart.isBefore(earliestAllowedStart) &&
+                (latestAllowedDate == null || !candidateStart.toLocalDate().isAfter(latestAllowedDate)) &&
                 !request.occupiedStartAt.isBefore(workStartOffset) &&
                 !request.occupiedEndAt.isAfter(workEndOffset) &&
                 !availabilityConflictChecker.hasConflict(request, occupiedRanges)

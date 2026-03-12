@@ -172,6 +172,10 @@ Invalid payloads return `400`:
   - `slotIntervalMinutes=<int>` required
   - `staffId=<uuid>` optional
 - Returns available slots for the requested service and date range.
+- Applies service booking rules:
+  - inactive services return no slots
+  - `minAdvanceMinutes` removes slots too close to current time
+  - `maxAdvanceDays` removes slots beyond the allowed future booking window
 
 ### Availability response
 

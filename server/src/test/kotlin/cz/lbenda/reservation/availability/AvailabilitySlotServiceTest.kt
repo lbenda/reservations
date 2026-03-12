@@ -28,6 +28,8 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import java.math.BigDecimal
+import java.time.Clock
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.OffsetDateTime
@@ -60,14 +62,6 @@ class AvailabilitySlotServiceTest {
         bookingRepository = bookingRepository,
         blockRepository = blockRepository,
         serviceRepository = serviceRepository
-    )
-    private val slotService = DefaultAvailabilitySlotService(
-        staffRepository = staffRepository,
-        staffServiceRepository = staffServiceRepository,
-        serviceRepository = serviceRepository,
-        staffAvailabilityScheduleService = scheduleService,
-        staffOccupiedTimeService = occupiedTimeService,
-        availabilityConflictChecker = DefaultAvailabilityConflictChecker()
     )
 
     @BeforeEach
@@ -110,7 +104,7 @@ class AvailabilitySlotServiceTest {
             )
         )
 
-        val slots = slotService.generateSlots(
+        val slots = createSlotService().generateSlots(
             AvailabilitySlotQuery(
                 businessId = business.id,
                 serviceId = service.id,
@@ -140,7 +134,7 @@ class AvailabilitySlotServiceTest {
         createWeeklySchedule(assignedStaff.id, StaffScheduleRangeType.WORK, LocalTime.of(9, 0), LocalTime.of(10, 0))
         createWeeklySchedule(unassignedStaff.id, StaffScheduleRangeType.WORK, LocalTime.of(9, 0), LocalTime.of(10, 0))
 
-        val slots = slotService.generateSlots(
+        val slots = createSlotService().generateSlots(
             AvailabilitySlotQuery(
                 businessId = business.id,
                 serviceId = service.id,
@@ -174,7 +168,7 @@ class AvailabilitySlotServiceTest {
             dayOfWeek = 7
         )
 
-        val slots = slotService.generateSlots(
+        val slots = createSlotService().generateSlots(
             AvailabilitySlotQuery(
                 businessId = business.id,
                 serviceId = service.id,
@@ -212,7 +206,7 @@ class AvailabilitySlotServiceTest {
             endTime = LocalTime.of(10, 0)
         )
 
-        val slots = slotService.generateSlots(
+        val slots = createSlotService().generateSlots(
             AvailabilitySlotQuery(
                 businessId = business.id,
                 serviceId = service.id,
@@ -225,6 +219,115 @@ class AvailabilitySlotServiceTest {
         )
 
         assertEquals(listOf("09:15"), slots.map { it.startAt.toLocalTime().toString().substring(0, 5) })
+    }
+
+    @Test
+    fun `slot generation respects min advance and max advance service rules`() {
+        val business = createBusiness("advance")
+        val location = createLocation(business)
+        val staff = createStaff(business, location, "Eva")
+        val service = serviceRepository.create(
+            NewService(
+                id = Uuid7.new(),
+                businessId = business.id,
+                serviceCode = "SVC-ADVANCE",
+                name = "Advance Massage",
+                description = null,
+                durationMinutes = 30,
+                bufferBeforeMinutes = 0,
+                bufferAfterMinutes = 0,
+                minAdvanceMinutes = 120,
+                maxAdvanceDays = 1,
+                cancellationPolicy = null,
+                priceAmount = BigDecimal("1200.00"),
+                priceCurrency = "CZK",
+                isActive = true
+            )
+        )
+        assignStaffToService(staff.id, service.id)
+        createWeeklySchedule(
+            staffId = staff.id,
+            rangeType = StaffScheduleRangeType.WORK,
+            startTime = LocalTime.of(9, 0),
+            endTime = LocalTime.of(13, 0)
+        )
+        createWeeklySchedule(
+            staffId = staff.id,
+            rangeType = StaffScheduleRangeType.WORK,
+            startTime = LocalTime.of(9, 0),
+            endTime = LocalTime.of(13, 0),
+            dayOfWeek = 2
+        )
+        createWeeklySchedule(
+            staffId = staff.id,
+            rangeType = StaffScheduleRangeType.WORK,
+            startTime = LocalTime.of(9, 0),
+            endTime = LocalTime.of(13, 0),
+            dayOfWeek = 3
+        )
+
+        val slotService = createSlotService(
+            Clock.fixed(Instant.parse("2026-03-23T08:30:00Z"), ZoneOffset.UTC)
+        )
+        val slots = slotService.generateSlots(
+            AvailabilitySlotQuery(
+                businessId = business.id,
+                serviceId = service.id,
+                staffId = staff.id,
+                startDate = LocalDate.of(2026, 3, 23),
+                endDate = LocalDate.of(2026, 3, 25),
+                timezone = "UTC",
+                slotIntervalMinutes = 30
+            )
+        )
+
+        assertEquals(
+            listOf(
+                "2026-03-23T10:30Z",
+                "2026-03-23T11:00Z",
+                "2026-03-23T11:30Z",
+                "2026-03-23T12:00Z",
+                "2026-03-23T12:30Z",
+                "2026-03-24T09:00Z",
+                "2026-03-24T09:30Z",
+                "2026-03-24T10:00Z",
+                "2026-03-24T10:30Z",
+                "2026-03-24T11:00Z",
+                "2026-03-24T11:30Z",
+                "2026-03-24T12:00Z",
+                "2026-03-24T12:30Z"
+            ),
+            slots.map { it.startAt.toString() }
+        )
+    }
+
+    @Test
+    fun `slot generation returns empty list for inactive service`() {
+        val business = createBusiness("inactive")
+        val location = createLocation(business)
+        val staff = createStaff(business, location, "Eva")
+        val service = createService(business, "Inactive Massage", 30, isActive = false)
+        assignStaffToService(staff.id, service.id)
+        createWeeklySchedule(
+            staffId = staff.id,
+            rangeType = StaffScheduleRangeType.WORK,
+            startTime = LocalTime.of(9, 0),
+            endTime = LocalTime.of(10, 0)
+        )
+
+        val slots = createSlotService().generateSlots(
+            AvailabilitySlotQuery(
+                businessId = business.id,
+                serviceId = service.id,
+                staffId = staff.id,
+                startDate = LocalDate.of(2026, 3, 23),
+                endDate = LocalDate.of(2026, 3, 23),
+                timezone = "UTC",
+                slotIntervalMinutes = 30
+            )
+        )
+
+        assertTrue(slots.isEmpty())
     }
 
     private fun createBusiness(slugPrefix: String): Business =
@@ -277,7 +380,8 @@ class AvailabilitySlotServiceTest {
         name: String,
         durationMinutes: Int,
         bufferBeforeMinutes: Int = 0,
-        bufferAfterMinutes: Int = 0
+        bufferAfterMinutes: Int = 0,
+        isActive: Boolean = true
     ) =
         serviceRepository.create(
             NewService(
@@ -294,7 +398,7 @@ class AvailabilitySlotServiceTest {
                 cancellationPolicy = null,
                 priceAmount = BigDecimal("1200.00"),
                 priceCurrency = "CZK",
-                isActive = true
+                isActive = isActive
             )
         )
 
@@ -342,5 +446,16 @@ class AvailabilitySlotServiceTest {
                 notes = null,
                 status = "active"
             )
+        )
+
+    private fun createSlotService(clock: Clock = Clock.systemUTC()) =
+        DefaultAvailabilitySlotService(
+            staffRepository = staffRepository,
+            staffServiceRepository = staffServiceRepository,
+            serviceRepository = serviceRepository,
+            staffAvailabilityScheduleService = scheduleService,
+            staffOccupiedTimeService = occupiedTimeService,
+            availabilityConflictChecker = DefaultAvailabilityConflictChecker(),
+            clock = clock
         )
 }
