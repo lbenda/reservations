@@ -1,7 +1,7 @@
 # T-021: Slot Generation
 
 - Type: Task
-- Status: Backlog
+- Status: In progress
 - Feature: F-003
 - Owner: backend
 

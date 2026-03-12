@@ -97,4 +97,68 @@ class StaffServiceRepository(private val dsl: DSLContext) {
         dsl.deleteFrom(STAFF_SERVICE)
             .where(STAFF_SERVICE.ID.eq(id))
             .execute() > 0
+
+    fun listByServiceId(serviceId: UUID, isActive: Boolean? = null): List<StaffService> {
+        var condition: org.jooq.Condition = STAFF_SERVICE.SERVICE_ID.eq(serviceId)
+        if (isActive != null) {
+            condition = condition.and(STAFF_SERVICE.IS_ACTIVE.eq(isActive))
+        }
+
+        return dsl.select(
+            STAFF_SERVICE.ID,
+            STAFF_SERVICE.STAFF_ID,
+            STAFF_SERVICE.SERVICE_ID,
+            STAFF_SERVICE.STAFF_SERVICE_KEY,
+            STAFF_SERVICE.IS_ACTIVE,
+            STAFF_SERVICE.CREATED_AT,
+            STAFF_SERVICE.UPDATED_AT
+        )
+            .from(STAFF_SERVICE)
+            .where(condition)
+            .orderBy(STAFF_SERVICE.STAFF_ID.asc())
+            .fetch()
+            .map {
+                StaffService(
+                    id = it.get(STAFF_SERVICE.ID)!!,
+                    staffId = it.get(STAFF_SERVICE.STAFF_ID)!!,
+                    serviceId = it.get(STAFF_SERVICE.SERVICE_ID)!!,
+                    staffServiceKey = it.get(STAFF_SERVICE.STAFF_SERVICE_KEY),
+                    isActive = it.get(STAFF_SERVICE.IS_ACTIVE)!!,
+                    createdAt = it.get(STAFF_SERVICE.CREATED_AT)!!,
+                    updatedAt = it.get(STAFF_SERVICE.UPDATED_AT)!!
+                )
+            }
+    }
+
+    fun listByStaffId(staffId: UUID, isActive: Boolean? = null): List<StaffService> {
+        var condition: org.jooq.Condition = STAFF_SERVICE.STAFF_ID.eq(staffId)
+        if (isActive != null) {
+            condition = condition.and(STAFF_SERVICE.IS_ACTIVE.eq(isActive))
+        }
+
+        return dsl.select(
+            STAFF_SERVICE.ID,
+            STAFF_SERVICE.STAFF_ID,
+            STAFF_SERVICE.SERVICE_ID,
+            STAFF_SERVICE.STAFF_SERVICE_KEY,
+            STAFF_SERVICE.IS_ACTIVE,
+            STAFF_SERVICE.CREATED_AT,
+            STAFF_SERVICE.UPDATED_AT
+        )
+            .from(STAFF_SERVICE)
+            .where(condition)
+            .orderBy(STAFF_SERVICE.SERVICE_ID.asc())
+            .fetch()
+            .map {
+                StaffService(
+                    id = it.get(STAFF_SERVICE.ID)!!,
+                    staffId = it.get(STAFF_SERVICE.STAFF_ID)!!,
+                    serviceId = it.get(STAFF_SERVICE.SERVICE_ID)!!,
+                    staffServiceKey = it.get(STAFF_SERVICE.STAFF_SERVICE_KEY),
+                    isActive = it.get(STAFF_SERVICE.IS_ACTIVE)!!,
+                    createdAt = it.get(STAFF_SERVICE.CREATED_AT)!!,
+                    updatedAt = it.get(STAFF_SERVICE.UPDATED_AT)!!
+                )
+            }
+    }
 }
