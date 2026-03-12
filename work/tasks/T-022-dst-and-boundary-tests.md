@@ -1,7 +1,7 @@
 # T-022: DST and Boundary Tests
 
 - Type: Task
-- Status: In progress
+- Status: Done
 - Feature: F-003
 - Owner: backend
 
