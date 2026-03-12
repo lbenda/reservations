@@ -157,3 +157,34 @@ Invalid payloads return `400`:
   "note": "Vacation"
 }
 ```
+
+## Availability
+
+### Public endpoint
+
+#### `GET /api/public/availability`
+- Query:
+  - `businessId=<uuid>` required
+  - `serviceId=<uuid>` required
+  - `startDate=YYYY-MM-DD` required
+  - `endDate=YYYY-MM-DD` required
+  - `timezone=<iana-zone>` required
+  - `slotIntervalMinutes=<int>` required
+  - `staffId=<uuid>` optional
+- Returns available slots for the requested service and date range.
+- Applies service booking rules:
+  - inactive services return no slots
+  - `minAdvanceMinutes` removes slots too close to current time
+  - `maxAdvanceDays` removes slots beyond the allowed future booking window
+
+### Availability response
+
+```json
+[
+  {
+    "startAt": "2026-03-23T09:00Z",
+    "endAt": "2026-03-23T09:30Z",
+    "staffId": "00000000-0000-0000-0000-000000000201"
+  }
+]
+```

@@ -2,6 +2,7 @@ package cz.lbenda.reservation
 
 import cz.lbenda.reservation.catalog.ServiceCatalogService
 import cz.lbenda.reservation.catalog.StaffManagementService
+import cz.lbenda.reservation.availability.AvailabilitySlotService
 import io.ktor.server.application.*
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.statuspages.StatusPages
@@ -19,7 +20,8 @@ fun main() {
 
 fun Application.module(
     serviceCatalogService: ServiceCatalogService = AppRuntime.createServiceCatalogService(),
-    staffManagementService: StaffManagementService = AppRuntime.createStaffManagementService()
+    staffManagementService: StaffManagementService = AppRuntime.createStaffManagementService(),
+    availabilitySlotService: AvailabilitySlotService = AppRuntime.createAvailabilitySlotService()
 ) {
     install(ContentNegotiation) {
         json(Json {
@@ -51,5 +53,6 @@ fun Application.module(
         }
         serviceCatalogRoutes(serviceCatalogService)
         staffRoutes(staffManagementService)
+        availabilityRoutes(availabilitySlotService)
     }
 }

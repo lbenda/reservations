@@ -70,48 +70,12 @@ class BookingRepository(private val dsl: DSLContext) {
     }
 
     fun findById(id: UUID): Booking? {
-        val record = dsl.select(
-            BOOKING.ID,
-            BOOKING.BUSINESS_ID,
-            BOOKING.LOCATION_ID,
-            BOOKING.SERVICE_ID,
-            BOOKING.STAFF_ID,
-            BOOKING.CLIENT_ID,
-            BOOKING.PUBLIC_REF,
-            BOOKING.STATUS,
-            BOOKING.START_AT,
-            BOOKING.END_AT,
-            BOOKING.TIMEZONE,
-            BOOKING.PRICE_AMOUNT,
-            BOOKING.PRICE_CURRENCY,
-            BOOKING.NOTES,
-            BOOKING.CLIENT_MESSAGE,
-            BOOKING.CREATED_AT,
-            BOOKING.UPDATED_AT
-        )
+        val record = selectBase()
             .from(BOOKING)
             .where(BOOKING.ID.eq(id))
             .fetchOne() ?: return null
 
-        return Booking(
-            id = record.get(BOOKING.ID)!!,
-            businessId = record.get(BOOKING.BUSINESS_ID)!!,
-            locationId = record.get(BOOKING.LOCATION_ID)!!,
-            serviceId = record.get(BOOKING.SERVICE_ID)!!,
-            staffId = record.get(BOOKING.STAFF_ID)!!,
-            clientId = record.get(BOOKING.CLIENT_ID)!!,
-            publicRef = record.get(BOOKING.PUBLIC_REF)!!,
-            status = record.get(BOOKING.STATUS)!!,
-            startAt = record.get(BOOKING.START_AT)!!,
-            endAt = record.get(BOOKING.END_AT)!!,
-            timezone = record.get(BOOKING.TIMEZONE)!!,
-            priceAmount = record.get(BOOKING.PRICE_AMOUNT)!!,
-            priceCurrency = record.get(BOOKING.PRICE_CURRENCY)!!,
-            notes = record.get(BOOKING.NOTES),
-            clientMessage = record.get(BOOKING.CLIENT_MESSAGE),
-            createdAt = record.get(BOOKING.CREATED_AT)!!,
-            updatedAt = record.get(BOOKING.UPDATED_AT)!!
-        )
+        return toBooking(record)
     }
 
     fun update(id: UUID, update: BookingUpdate): Booking? {
@@ -173,4 +137,71 @@ class BookingRepository(private val dsl: DSLContext) {
         dsl.deleteFrom(BOOKING)
             .where(BOOKING.ID.eq(id))
             .execute() > 0
+
+    fun listOverlapping(
+        businessId: UUID,
+        staffId: UUID,
+        windowStart: OffsetDateTime,
+        windowEnd: OffsetDateTime,
+        ignoredStatuses: Set<String> = setOf("canceled", "cancelled")
+    ): List<Booking> {
+        require(windowEnd.isAfter(windowStart)) { "windowEnd must be after windowStart" }
+
+        var condition = BOOKING.BUSINESS_ID.eq(businessId)
+            .and(BOOKING.STAFF_ID.eq(staffId))
+            .and(BOOKING.START_AT.lt(windowEnd))
+            .and(BOOKING.END_AT.gt(windowStart))
+
+        if (ignoredStatuses.isNotEmpty()) {
+            condition = condition.and(BOOKING.STATUS.notIn(ignoredStatuses))
+        }
+
+        return selectBase()
+            .from(BOOKING)
+            .where(condition)
+            .orderBy(BOOKING.START_AT.asc(), BOOKING.END_AT.asc(), BOOKING.ID.asc())
+            .fetch()
+            .map(::toBooking)
+    }
+
+    private fun selectBase() = dsl.select(
+        BOOKING.ID,
+        BOOKING.BUSINESS_ID,
+        BOOKING.LOCATION_ID,
+        BOOKING.SERVICE_ID,
+        BOOKING.STAFF_ID,
+        BOOKING.CLIENT_ID,
+        BOOKING.PUBLIC_REF,
+        BOOKING.STATUS,
+        BOOKING.START_AT,
+        BOOKING.END_AT,
+        BOOKING.TIMEZONE,
+        BOOKING.PRICE_AMOUNT,
+        BOOKING.PRICE_CURRENCY,
+        BOOKING.NOTES,
+        BOOKING.CLIENT_MESSAGE,
+        BOOKING.CREATED_AT,
+        BOOKING.UPDATED_AT
+    )
+
+    private fun toBooking(record: org.jooq.Record): Booking =
+        Booking(
+            id = record.get(BOOKING.ID)!!,
+            businessId = record.get(BOOKING.BUSINESS_ID)!!,
+            locationId = record.get(BOOKING.LOCATION_ID)!!,
+            serviceId = record.get(BOOKING.SERVICE_ID)!!,
+            staffId = record.get(BOOKING.STAFF_ID)!!,
+            clientId = record.get(BOOKING.CLIENT_ID)!!,
+            publicRef = record.get(BOOKING.PUBLIC_REF)!!,
+            status = record.get(BOOKING.STATUS)!!,
+            startAt = record.get(BOOKING.START_AT)!!,
+            endAt = record.get(BOOKING.END_AT)!!,
+            timezone = record.get(BOOKING.TIMEZONE)!!,
+            priceAmount = record.get(BOOKING.PRICE_AMOUNT)!!,
+            priceCurrency = record.get(BOOKING.PRICE_CURRENCY)!!,
+            notes = record.get(BOOKING.NOTES),
+            clientMessage = record.get(BOOKING.CLIENT_MESSAGE),
+            createdAt = record.get(BOOKING.CREATED_AT)!!,
+            updatedAt = record.get(BOOKING.UPDATED_AT)!!
+        )
 }
