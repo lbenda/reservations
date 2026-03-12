@@ -1,7 +1,7 @@
 # F-003: Availability Engine
 
 - Type: Feature
-- Status: In review
+- Status: Done
 - Source: Product baseline (core scheduling)
 
 ## Description

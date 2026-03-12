@@ -1,7 +1,7 @@
 # T-021: Slot Generation
 
 - Type: Task
-- Status: In review
+- Status: Done
 - Feature: F-003
 - Owner: backend
 
