@@ -1,7 +1,7 @@
 # F-002: Staff & Working Hours
 
 - Type: Feature
-- Status: In review
+- Status: Done
 - Source: Product baseline
 
 ## Description

@@ -1,7 +1,7 @@
 # T-017: Admin API/UI - Staff Management and Schedule Editing
 
 - Type: Task
-- Status: In review
+- Status: Done
 - Feature: F-002
 - Owner: fullstack
 

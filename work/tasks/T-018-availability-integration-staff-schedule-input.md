@@ -1,7 +1,7 @@
 # T-018: Availability Integration - Staff Schedule Input
 
 - Type: Task
-- Status: In review
+- Status: Done
 - Feature: F-002
 - Owner: backend
 

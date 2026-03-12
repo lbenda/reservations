@@ -1,7 +1,7 @@
 # T-016: Data Model - Staff Schedules and Exceptions
 
 - Type: Task
-- Status: In review
+- Status: Done
 - Feature: F-002
 - Owner: backend
 
