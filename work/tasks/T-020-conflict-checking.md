@@ -1,7 +1,7 @@
 # T-020: Conflict Checking
 
 - Type: Task
-- Status: Done
+- Status: In review
 - Feature: F-003
 - Owner: backend
 

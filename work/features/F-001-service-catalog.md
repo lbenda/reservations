@@ -1,7 +1,7 @@
 # F-001: Service Catalog
 
 - Type: Feature
-- Status: In review
+- Status: Done
 - Source: Product baseline
 
 ## Description
