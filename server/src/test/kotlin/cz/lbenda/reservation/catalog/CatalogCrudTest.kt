@@ -8,6 +8,8 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import java.math.BigDecimal
+import java.time.LocalDate
+import java.time.LocalTime
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -19,6 +21,8 @@ class CatalogCrudTest {
     private val businessRepository = BusinessRepository(dsl)
     private val locationRepository = LocationRepository(dsl)
     private val staffRepository = StaffRepository(dsl)
+    private val staffWeeklyScheduleRepository = StaffWeeklyScheduleRepository(dsl)
+    private val staffScheduleExceptionRepository = StaffScheduleExceptionRepository(dsl)
     private val serviceRepository = ServiceRepository(dsl)
     private val staffServiceRepository = StaffServiceRepository(dsl)
 
@@ -183,6 +187,113 @@ class CatalogCrudTest {
 
         assertTrue(staffServiceRepository.delete(created.id))
         assertNull(staffServiceRepository.findById(created.id))
+    }
+
+    @Test
+    fun `staff weekly schedule CRUD works`() {
+        val business = createBusiness()
+        val location = createLocation(business)
+        val staff = staffRepository.create(
+            NewStaff(
+                id = Uuid7.new(),
+                businessId = business.id,
+                locationId = location.id,
+                displayName = "Schedule Staff",
+                email = null,
+                phone = null,
+                bio = null,
+                status = "active"
+            )
+        )
+
+        val created = staffWeeklyScheduleRepository.create(
+            NewStaffWeeklySchedule(
+                id = Uuid7.new(),
+                staffId = staff.id,
+                dayOfWeek = 1,
+                rangeType = StaffScheduleRangeType.WORK,
+                startTime = LocalTime.of(9, 0),
+                endTime = LocalTime.of(17, 0)
+            )
+        )
+
+        val fetched = staffWeeklyScheduleRepository.findById(created.id)
+        assertNotNull(fetched)
+        assertEquals(1, fetched.dayOfWeek)
+        assertEquals(StaffScheduleRangeType.WORK, fetched.rangeType)
+
+        val updated = staffWeeklyScheduleRepository.update(
+            created.id,
+            StaffWeeklyScheduleUpdate(
+                dayOfWeek = 1,
+                rangeType = StaffScheduleRangeType.BREAK,
+                startTime = LocalTime.of(12, 0),
+                endTime = LocalTime.of(13, 0)
+            )
+        )
+        assertNotNull(updated)
+        assertEquals(StaffScheduleRangeType.BREAK, updated.rangeType)
+
+        val list = staffWeeklyScheduleRepository.listByStaffId(staff.id)
+        assertEquals(1, list.size)
+
+        assertTrue(staffWeeklyScheduleRepository.delete(created.id))
+        assertNull(staffWeeklyScheduleRepository.findById(created.id))
+    }
+
+    @Test
+    fun `staff schedule exception CRUD works`() {
+        val business = createBusiness()
+        val location = createLocation(business)
+        val staff = staffRepository.create(
+            NewStaff(
+                id = Uuid7.new(),
+                businessId = business.id,
+                locationId = location.id,
+                displayName = "Exception Staff",
+                email = null,
+                phone = null,
+                bio = null,
+                status = "active"
+            )
+        )
+
+        val created = staffScheduleExceptionRepository.create(
+            NewStaffScheduleException(
+                id = Uuid7.new(),
+                staffId = staff.id,
+                exceptionDate = LocalDate.of(2026, 3, 16),
+                rangeType = StaffScheduleRangeType.DAY_OFF,
+                startTime = null,
+                endTime = null,
+                note = "Vacation"
+            )
+        )
+
+        val fetched = staffScheduleExceptionRepository.findById(created.id)
+        assertNotNull(fetched)
+        assertEquals(LocalDate.of(2026, 3, 16), fetched.exceptionDate)
+        assertEquals(StaffScheduleRangeType.DAY_OFF, fetched.rangeType)
+
+        val updated = staffScheduleExceptionRepository.update(
+            created.id,
+            StaffScheduleExceptionUpdate(
+                exceptionDate = LocalDate.of(2026, 3, 17),
+                rangeType = StaffScheduleRangeType.WORK,
+                startTime = LocalTime.of(10, 0),
+                endTime = LocalTime.of(14, 0),
+                note = "Special opening hours"
+            )
+        )
+        assertNotNull(updated)
+        assertEquals(StaffScheduleRangeType.WORK, updated.rangeType)
+        assertEquals(LocalTime.of(10, 0), updated.startTime)
+
+        val list = staffScheduleExceptionRepository.listByStaffId(staff.id)
+        assertEquals(1, list.size)
+
+        assertTrue(staffScheduleExceptionRepository.delete(created.id))
+        assertNull(staffScheduleExceptionRepository.findById(created.id))
     }
 
     private fun createBusiness(): Business = businessRepository.create(

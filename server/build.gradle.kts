@@ -1,16 +1,21 @@
 plugins {
     kotlin("jvm")
-    kotlin("plugin.serialization") version "2.1.10"
-    id("io.ktor.plugin") version "3.1.1"
+    kotlin("plugin.serialization") version "2.3.0"
+    application
 }
 
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 application {
-    mainClass.set("cz.lbenda.reservation.ApplicationKt")
+    mainClass = "cz.lbenda.reservation.ApplicationKt"
 }
 
 val javaSourceSets = extensions.getByName("sourceSets") as org.gradle.api.tasks.SourceSetContainer
 
 kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_23)
+    }
     sourceSets {
         named("main") {
             kotlin.srcDir("build/generated-src/jooq")
@@ -29,11 +34,11 @@ java {
 }
 
 dependencies {
-    implementation("io.ktor:ktor-server-core")
-    implementation("io.ktor:ktor-server-netty")
-    implementation("io.ktor:ktor-server-content-negotiation")
-    implementation("io.ktor:ktor-server-status-pages")
-    implementation("io.ktor:ktor-serialization-kotlinx-json")
+    implementation(libs.ktorServerCore)
+    implementation(libs.ktorServerNetty)
+    implementation(libs.ktorServerContentNegotiation)
+    implementation(libs.ktorServerStatusPages)
+    implementation(libs.ktorSerializationKotlinxJson)
     implementation("ch.qos.logback:logback-classic:1.5.16")
     implementation("org.flywaydb:flyway-core:10.22.0")
     implementation("org.flywaydb:flyway-database-postgresql:10.22.0")
@@ -41,7 +46,7 @@ dependencies {
     implementation("com.zaxxer:HikariCP:5.1.0")
     implementation("org.jooq:jooq:3.19.8")
 
-    testImplementation("io.ktor:ktor-server-test-host")
+    testImplementation(libs.ktorServerTestHost)
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.11.4")

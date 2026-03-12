@@ -1,8 +1,6 @@
 package cz.lbenda.reservation
 
-import cz.lbenda.reservation.catalog.DefaultServiceCatalogService
 import cz.lbenda.reservation.catalog.SampleCatalogFixtures
-import cz.lbenda.reservation.catalog.ServiceRepository
 import cz.lbenda.reservation.db.TestDatabase
 import io.ktor.client.request.get
 import io.ktor.client.request.header
@@ -44,7 +42,10 @@ class ServiceCatalogApiTest {
     @Test
     fun `admin api supports create list get update and archive`() = testApplication {
         application {
-            module(DefaultServiceCatalogService(ServiceRepository(TestDatabase.dsl)))
+            module(
+                serviceCatalogService = TestServiceFactory.serviceCatalogService(),
+                staffManagementService = TestServiceFactory.staffManagementService()
+            )
         }
 
         val createResponse = client.post("/api/admin/services") {
@@ -126,7 +127,10 @@ class ServiceCatalogApiTest {
     @Test
     fun `admin api enforces business scoping and public api returns only active services`() = testApplication {
         application {
-            module(DefaultServiceCatalogService(ServiceRepository(TestDatabase.dsl)))
+            module(
+                serviceCatalogService = TestServiceFactory.serviceCatalogService(),
+                staffManagementService = TestServiceFactory.staffManagementService()
+            )
         }
 
         val createResponse = client.post("/api/admin/services") {
@@ -167,7 +171,10 @@ class ServiceCatalogApiTest {
     @Test
     fun `admin api returns validation errors`() = testApplication {
         application {
-            module(DefaultServiceCatalogService(ServiceRepository(TestDatabase.dsl)))
+            module(
+                serviceCatalogService = TestServiceFactory.serviceCatalogService(),
+                staffManagementService = TestServiceFactory.staffManagementService()
+            )
         }
 
         val response = client.post("/api/admin/services") {
